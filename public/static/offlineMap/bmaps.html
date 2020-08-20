@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>百度离线地图演示</title>
+	<link href="css/DrawingManager_min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="bmap.css" />
+	<style type="text/css">
+		body,html {
+			font-family: Arial,Verdana;
+			font-size: 13px;
+			margin: 0;
+			overflow: hidden;
+		}
+		#map_canvas {
+		  left: 0;
+		  top: 0;
+		  width: 100%;
+		  height: 100%;
+		  position: absolute;
+		}
+	</style>
+        <script type="text/javascript" src="api/mapconfig.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+	<script type="text/javascript" src="lib/drawingmanager.js"></script>
+	<script type="text/javascript">
+	var overlays = [];
+	function initialize(){
+		var map = new BMap.Map("map_canvas");
+		var location = new BMap.Point(116.404, 39.915);
+		map.centerAndZoom(location, 12);
+		map.addControl(new BMap.NavigationControl());
+		map.addControl(new BMap.OverviewMapControl());
+		map.addControl(new BMap.MapTypeControl({
+			mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
+		}));
+		map.addControl(new BMap.ScaleControl({
+			offset: new BMap.Size(5, 5),
+			anchor: BMAP_ANCHOR_BOTTOM_LEFT
+		}));
+
+
+		var marker = new BMap.Marker(location, {
+			enableMassClear: true,
+			enableDragging: true,
+			raiseOnDrag: false,
+			icon: new BMap.Icon("images/marker-blue.png", new BMap.Size(32, 32)),
+			title: "Hello"
+		});
+
+		map.addOverlay(marker);
+
+		var label = new BMap.Label("北京天安门", {
+			position: location,
+			enableMassClear: false,
+			offset: new BMap.Size(-19, -19)
+		});
+		label.setStyle({
+			borderColor: "#808080",
+			color: "#333",
+			padding: "1px 3px 1px 3px",
+			borderRadius: "3px",
+			backgroundColor: "#F4F4F4"
+		});
+		marker.setLabel(label);
+		//marker.setAnimation(BMAP_ANIMATION_BOUNCE); 
+		
+		var content =
+			"<h4 style='margin:0 0 5px 0;padding:0.2em 0'>天安门</h4>" + 
+			"<img style='float:right;margin:4px' id='imgDemo' src='images/tiananmen.jpg' width='139' height='104' title='天安门'/>" + 
+			"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...</p>" + 
+			"</div>";
+
+		var infoWindow = new BMap.InfoWindow(content, {
+			offset: new BMap.Size(0, -20),
+			enableMessage: false,
+			enableAutoPan: false
+		});
+		marker.addEventListener("click", function() {
+			this.openInfoWindow(infoWindow);
+		});
+	
+        //画个多边形
+		var polygon = new BMap.Polygon([
+			new BMap.Point(116.32914,39.97304),
+			new BMap.Point(116.44153,39.97570),
+			new BMap.Point(116.46999,39.95667),
+			new BMap.Point(116.46970,39.87477),
+			new BMap.Point(116.45936,39.86547),
+			new BMap.Point(116.41192,39.86303),
+			new BMap.Point(116.38749,39.86281),
+			new BMap.Point(116.36593,39.85771),
+			new BMap.Point(116.34667,39.85284),
+			new BMap.Point(116.33057,39.85616),
+			new BMap.Point(116.32023,39.87034),
+			new BMap.Point(116.31563,39.96707)
+		], {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.7,fillOpacity:0.1,fillColor:"red",strokeStyle:"dashed"});
+		map.addOverlay(polygon);
+		
+		var coords = "116.44132,40.02691,116.46202,40.02116,116.49537,40.01674,116.55113,39.94465,116.55631,39.85697,116.53561,39.83525,116.48962,39.81175,116.44535,39.79623,116.42753,39.77494,116.38728,39.76474,116.38268,39.77805,116.34819,39.78381,116.31714,39.78736,116.29472,39.77672,116.27805,39.78603,116.27460,39.80732,116.23838,39.83924,116.21538,39.88399,116.22286,39.98136,116.24298,40.00303,116.27402,40.01409,116.30449,40.02116,116.36026,40.02823",
+		 points = [],
+         arr = coords.split(",");
+		for (var i = arr.length-1;i>=0;i--){
+            var point = new BMap.Point(arr[i-1],arr[i]);
+            points.push(point);
+            i = i - 1;
+		}
+        
+		var polygon2 = new BMap.Polyline(points, {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.7,fillOpacity:0.01,fillColor:"red"});
+        map.addOverlay(polygon2);
+
+		//画个圆圈
+		var point = new BMap.Point(116.31563,39.96707);
+		var circle = new BMap.Circle(point,2000,{strokeColor:"red", strokeWeight:4, strokeOpacity:0.7,fillOpacity:0.1,fillColor:"red"});
+		map.addOverlay(circle);
+		
+		var overlays = [];
+		//回调获得覆盖物信息
+		var overlaycomplete = function(e){
+			overlays.push(e.overlay);
+			var result = "";
+
+			result += e.drawingMode + ":";
+			if (e.drawingMode == BMAP_DRAWING_MARKER) {
+				result += ' 坐标：' + e.overlay.getPosition().lng + ',' + e.overlay.getPosition().lat;
+			}
+			if (e.drawingMode == BMAP_DRAWING_CIRCLE) {
+				result += ' 半径：' + e.overlay.getRadius();
+				result += ' 中心点：' + e.overlay.getCenter().lng + "," + e.overlay.getCenter().lat;
+			}
+			if (e.drawingMode == BMAP_DRAWING_POLYLINE || e.drawingMode == BMAP_DRAWING_POLYGON || e.drawingMode == BMAP_DRAWING_RECTANGLE) {
+				result += ' 所画的点个数：' + e.overlay.getPath().length;
+			}
+
+			alert(result);
+
+		};
+
+		
+		var styleOptions = {
+			strokeColor:"red",    
+			fillColor:"red",      
+			strokeWeight: 4,       
+			strokeOpacity: 0.6,	  
+			fillOpacity: 0.2,     
+			strokeStyle: 'solid' //solid or dashed
+		}
+		//实例化鼠标绘制工具
+		var drawingManager = new BMapLib.DrawingManager(map, {
+			isOpen: false, 
+			enableDrawingTool: true, 
+			enableCalculate:true,
+			drawingToolOptions: {
+				anchor: BMAP_ANCHOR_TOP_LEFT, //位置
+				offset: new BMap.Size(80, 9), //偏离值
+				scale: 0.5 
+			},
+			circleOptions: styleOptions, 
+			polylineOptions: styleOptions, 
+			polygonOptions: styleOptions, 
+			rectangleOptions: styleOptions 
+		});
+
+		
+		//添加鼠标绘制工具监听事件，用于获取绘制结果
+		drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+
+	}
+</script>
+
+</head>
+
+<body onload="initialize()">
+    <div id="map_canvas"></div>
+</body>
+</html>

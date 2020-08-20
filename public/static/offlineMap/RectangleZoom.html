@@ -1,0 +1,27 @@
+﻿
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>拉框放大工具</title>
+ 	<link rel="stylesheet" type="text/css" href="bmap.css" />
+        <script type="text/javascript" src="api/mapconfig.js"></script>
+	<script type="text/javascript" src="api/mapapi.min.js"></script>
+	<script type="text/javascript" src="lib/RectangleZoom.js"></script>
+</script>
+</head>
+<body>
+<div style="width:640px;height:640px;border:1px solid gray" id="container">
+</div>
+<input type="button" value="开启" onclick="myDrag.open()" />
+<input type="button" value="关闭" onclick="myDrag.close()" />
+</body>
+</html>
+<script type="text/javascript">
+	var map = new BMap.Map("container");
+	map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+	var myDrag = new BMapLib.RectangleZoom(map, {
+		followText: "拖拽鼠标进行操作"
+	});
+
+</script>
+

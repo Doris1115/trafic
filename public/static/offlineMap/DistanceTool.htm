@@ -1,0 +1,57 @@
+﻿<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Distance Tool</title>
+	<link rel="stylesheet" type="text/css" href="bmap.css" />
+    <script type="text/javascript" src="api/mapconfig.js"></script>	<script type="text/javascript" src="api/mapapi.min.js"></script>
+    <script type="text/javascript" src="lib/DistanceTool.js"></script>
+</head>
+
+<body>
+	<div style="width:960px;height:640px;border:1px solid gray" id="container"></div>
+	<input type="button" value="开启" onclick="myDis.open();" />
+	<input type="button" value="关闭" onclick="myDis.close()" />
+</body>
+
+</html>
+<script type="text/javascript">
+    var map = new BMap.Map("container");
+	map.addControl(new BMap.NavigationControl());
+	map.addControl(new BMap.OverviewMapControl());
+	map.addControl(new BMap.MapTypeControl({
+		mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
+	}));
+	map.addControl(new BMap.ScaleControl({
+		offset: new BMap.Size(5, 5),
+		anchor: BMAP_ANCHOR_BOTTOM_LEFT
+	}));
+  
+
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+    var myDis = new BMapLib.DistanceTool(map);
+	myDis.open();
+    // 如果要调试事件接口，请打开下方屏蔽代码，
+    // 在firefox或者chrome下查看调试信息
+
+    /*myDis.addEventListener("drawend", function(e) {
+    	console.log("drawend");
+    	console.log(e.points);
+    	console.log(e.overlays);
+    	console.log(e.distance);
+    });
+
+    myDis.addEventListener("addpoint", function(e) {
+    	console.log("addpoint");
+    	console.log(e.point);
+    	console.log(e.pixel);
+    	console.log(e.index);
+    	console.log(e.distance);
+    });
+
+    myDis.addEventListener("removepolyline", function(e) {
+    	console.log("removepolyline");
+    	console.log(e);
+    });
+    */
+</script>
