@@ -1,18 +1,8 @@
 <template>
   <div class="app-container">
-    <!--工具栏高发路段-->
+    <!--工具栏-->
     <div class="head-container">
       <div>
-        <el-date-picker
-          v-model="time"
-          type="date"
-          placeholder="选择日期"
-          size="small"
-          clearable
-          class="filter-item"
-          format="yyyy 年 MM 月 dd 日"
-          @change="queryData"
-        />
         <!-- 搜索 -->
         <el-button
           class="filter-item"
@@ -22,7 +12,7 @@
           @click="queryData"
         >搜索</el-button>
       </div>
-      <!-- <el-dialog
+      <el-dialog
         :close-on-click-modal="false"
         :before-close="dialogClose"
         :visible.sync="chartShow"
@@ -32,7 +22,11 @@
         <el-row class="line-box">
           <line-chart :chart-data="trendData" />
         </el-row>
-      </el-dialog>-->
+        <!-- <div slot="footer" class="dialog-footer">
+          <el-button type="text" @click="crud.cancelCU">取消</el-button>
+          <el-button :loading="crud.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
+        </div>-->
+      </el-dialog>
       <!--表格渲染-->
       <el-table
         ref="table"
@@ -50,7 +44,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="roadName" label="道路名称" width="80" fixed />
-        <el-table-column prop="roadSegid" label="路段名称" width="120" fixed />
+        <el-table-column prop="roadLinkName" label="路段名称" width="120" fixed />
         <el-table-column
           v-for="(item,index) in tableColumnProp"
           :key="index"
@@ -70,14 +64,21 @@
 </template>
 
 <script>
+// import CRUD, { presenter, header, form, crud } from '@crud/crud'
+// import rrOperation from '@crud/RR.operation'
+// import crudOperation from '@crud/CRUD.operation'
+// import udOperation from '@crud/UD.operation'
+// import pagination from '@crud/Pagination'
+import Treeselect, { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+// import crudTCfgDepartment from '@/api/duty/tCfgDepartment'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { congestionIndex } from '@/api/bigData/roadCondition'
-// import LineChart from '@/system/bigData/chart/lineChart'
+// import LineChart from '@/views/bigData/chart/lineChart'
 export default {
-  name: 'Dept',
-  // components: { LineChart },
+  name: 'CongestionIndex',
+  components: { Treeselect, LineChart },
   data() {
     return {
-      time: '',
       tableData: [],
       tableColumnProp: [],
       chartShow: false,
@@ -87,53 +88,27 @@ export default {
   },
   mounted() {
     this.initTableColumnProp()
+    // this.queryData()
     this.getEchartData()
   },
 
   created() {
-    // this.queryData()
-    var param = {
-      day: 21,
-      month: 8,
-      year: 2020
-    }
-    congestionIndex(param).then(res => {
-      this.tableData = res.tableData
-      this.$nextTick(item => {
-        this.tableLoading = false
-      })
-    })
+    this.queryData()
   },
   methods: {
-    // 钩子：在获取表格数据之前执行，false 则代表不获取数据
-    // [CRUD.HOOK.beforeRefresh]() {
-    //   return true
-    // },
-
-    // [CRUD.HOOK.beforeSubmit]() {
-    //   return true
-    // }
     queryData() {
       this.tableLoading = true
-      var param = {
-        // day: this.time.getDate(),
-        // month: this.time.getMonth() + 1,
-        // year: this.time.getFullYear()
-        day: 22,
-        month: 8,
-        year: 2020
-      }
-      console.log('data', this.time.getDate())
-      congestionIndex(param).then(res => {
-        this.tableData = res.tableData
-        this.$nextTick(item => {
+      congestionIndex().then(res => {
+        console.log('21dd', res)
+        this.tableData = res
+        this.$nextTick(iten => {
           this.tableLoading = false
         })
       })
     },
     initTableColumnProp() {
       for (let i = 1; i < 25; i++) {
-        const temp = { title: i + '时', num: 'am' + i + '.Num', timeSum: 'am' + i + '.TimeLength' }
+        const temp = { title: i + '时', columnProp: 'am' + i, indexAvg: 'am' + i + '.indexAvg', lastMonthThisDayIndexAvg: 'am' + i + '.lastMonthThisDayIndexAvg', lastYearThisDayIndexAvg: 'am' + i + '.lastYearThisDayIndexAvg', yesterdayIndexAvg: 'am' + i + '.yesterdayIndexAvg' }
         this.tableColumnProp.push(temp)
       }
     },
@@ -241,4 +216,3 @@ export default {
   }
 }
 </style>
-
