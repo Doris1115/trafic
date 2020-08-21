@@ -8,19 +8,19 @@
       <ul class="head-nav left">
         <router-link :to="{ name: 'Percancy'}" tag="li">
           违法
-          <i class="el-icon-d-arrow-right"></i>
+          <i class="el-icon-d-arrow-right" />
         </router-link>
         <router-link :to="{ name: 'Alarm'}" tag="li">
           拥堵流量
-          <i class="el-icon-d-arrow-right"></i>
+          <i class="el-icon-d-arrow-right" />
         </router-link>
       </ul>
       <ul class="head-nav right">
-        <router-link :to="{ name: 'Percancy'}" tag="li">
-          <i class="el-icon-d-arrow-left"></i>稽查布控
+        <router-link :to="{ name: 'Inspect'}" tag="li">
+          <i class="el-icon-d-arrow-left" />稽查布控
         </router-link>
         <router-link :to="{ name: 'PoliceTrack'}" tag="li">
-          <i class="el-icon-d-arrow-left"></i>民警足迹
+          <i class="el-icon-d-arrow-left" />民警足迹
         </router-link>
       </ul>
     </el-header>
@@ -41,10 +41,9 @@ export default {
     return {
       isShow: false
     }
-  },
+  }
 
-
-};
+}
 </script>
 
 <style lang="scss" scoped>

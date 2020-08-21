@@ -3,10 +3,8 @@
     <template v-slot:main>
       <dl>
         <dd v-for="(item,index) in chartData.data" :key="index">
-          <span>{{item.time}}</span>
-          <p>
-            {{item.content}}
-          </p>
+          <span>{{ item.time }}</span>
+          <p>{{ item.content }}</p>
         </dd>
       </dl>
     </template>
@@ -27,9 +25,9 @@ export default {
       type: Object,
       required: true
     }
-  },
+  }
 
-};
+}
 </script>
 
 <style lang='scss' scoped>
@@ -43,6 +41,9 @@ dl {
   top: 30px;
   bottom: 0;
   width: 100%;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   dd {
     color: #fff;
     border-bottom: 1px dotted #0095d6;

@@ -14,15 +14,15 @@
           <dl>
             <dd>
               <el-row>
-                <el-col v-for="(item,index) in chartData.column" :key="index" :span="12">{{item}}</el-col>
+                <el-col v-for="(item,index) in chartData.column" :key="index" :span="12">{{ item }}</el-col>
               </el-row>
             </dd>
             <dd v-for="(item,index) in rankData" :key="index" class="list">
               <el-row>
-                <el-col :span="12">{{item.typeName}}</el-col>
+                <el-col :span="12">{{ item.typeName }}</el-col>
                 <el-col :span="12">
-                  <p>{{item.workload}}</p>
-                  <p>（排名:{{item.ordLochus}}）</p>
+                  <p>{{ item.workload }}</p>
+                  <p>（排名:{{ item.score }}）</p>
                 </el-col>
               </el-row>
             </dd>
@@ -71,8 +71,8 @@ export default {
       console.log('data', this.rankData)
       this.$listeners.toggleRank()
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang='scss' scoped>
@@ -86,7 +86,7 @@ export default {
     height: 38px;
     color: #fff;
     border-radius: 5px;
-    font-family: "Lato", sans-serif;
+    font-family: 'Lato', sans-serif;
     font-weight: 500;
     background: transparent;
     cursor: pointer;
@@ -107,7 +107,7 @@ export default {
     z-index: 1;
     &:after {
       position: absolute;
-      content: "";
+      content: '';
       width: 0;
       height: 100%;
       top: 0;
@@ -145,6 +145,9 @@ export default {
   bottom: 0;
   width: 100%;
   overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 dl {
   margin: 0;

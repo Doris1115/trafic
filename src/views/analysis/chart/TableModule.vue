@@ -3,7 +3,11 @@
     <template v-slot:main>
       <div ref="box" class="visual_chart sfzcll">
         <el-row>
-          <el-col v-for="title in chartData.column" :key="title.index" :span="spanAccount">{{title}}</el-col>
+          <el-col
+            v-for="title in chartData.column"
+            :key="title.index"
+            :span="spanAccount"
+          >{{ title }}</el-col>
         </el-row>
         <el-row v-for="data in chartData.flowData" :key="data.index" class="sfzcll_box">
           <img class="sfzcll_bkJk" src="@/assets/ksh_images/ksh34.png" />
@@ -12,17 +16,23 @@
           <img class="sfzcll_bkJk" src="@/assets/ksh_images/ksh34.png" />
 
           <el-col :span="8" class="sfzcll_smallBk">
-            <div class="ygl">
-              <span :style={height:boxHeight,lineHeight:boxHeight}>{{data.Orgin}}</span>
-            </div>
+            <el-tooltip placement="top-start">
+              <div slot="content">{{ data.Orgin }}</div>
+              <div class="ygl">
+                <span :style="{height:boxHeight,lineHeight:boxHeight}">{{ data.Orgin }}</span>
+              </div>
+            </el-tooltip>
           </el-col>
           <el-col :span="8" class="sfzcll_smallBk">
-            <div class="ygh">
-              <span :style={height:boxHeight,lineHeight:boxHeight}>{{data.Destination}}</span>
-            </div>
+            <el-tooltip placement="top">
+              <div slot="content">{{ data.Destination }}</div>
+              <div class="ygh">
+                <span :style="{height:boxHeight,lineHeight:boxHeight}">{{ data.Destination }}</span>
+              </div>
+            </el-tooltip>
           </el-col>
           <el-col :span="8">
-            <label :style={height:boxHeight,lineHeight:boxHeight}>{{data.Time}} min</label>
+            <label :style="{height:boxHeight,lineHeight:boxHeight}">{{ data.Time }} min</label>
           </el-col>
         </el-row>
       </div>
@@ -36,11 +46,6 @@ export default {
   components: {
     VisualBox
   },
-  data() {
-    return {
-      vc: 'red'
-    }
-  },
   props: {
     className: {
       type: String,
@@ -50,21 +55,24 @@ export default {
       type: Object,
       required: true
     }  },
+  data() {
+    return {
+      vc: 'red'
+    }
+  },
   computed: {
     spanAccount() {
       return 24 / (this.chartData.column.length)
     },
     boxHeight() {
-      return (this.$refs.box.offsetHeight*0.21-12)+'px';
+      return (this.$refs.box.offsetHeight * 0.21 - 12) + 'px'
     }
-
 
   },
   mounted() {
     console.log('fe', this.boxHeight)
-  },}
+  }}
 </script>
-
 
 <style lang='scss' scoped>
 .visual_chart {
@@ -88,6 +96,7 @@ export default {
     border: 1px solid #1380bd;
     position: relative;
     margin-bottom: 8px;
+    overflow: hidden;
     &:last-of-type {
       margin: 0;
     }
@@ -126,6 +135,7 @@ export default {
     .sfzcll_smallBk {
       height: 100%;
       padding: 2px 5px;
+      cursor: pointer;
       & > div {
         height: 100%;
         background: url(/static/images/ksh38.png) no-repeat;
@@ -135,7 +145,9 @@ export default {
       }
       .ygl {
         color: #00ffc6;
-        span{display: block;}
+        span {
+          display: block;
+        }
       }
       .ygh {
         color: #ffe400;

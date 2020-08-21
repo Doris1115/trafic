@@ -8,8 +8,8 @@
         <el-main>
           <div class="text-box">
             <p v-for="(data,index) in chartData.data" :key="index">
-              <span>{{data.name}}：</span>
-              <span>{{data.value}}</span>
+              <span>{{ data.name }}：</span>
+              <span>{{ data.value }}</span>
             </p>
           </div>
         </el-main>
@@ -38,7 +38,7 @@ export default {
       required: true
     }
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>
@@ -55,6 +55,7 @@ export default {
   margin-bottom: 0;
   padding-left: 0;
   height: 224px;
+  overflow: hidden;
   img {
     width: 100%;
     height: 100%;

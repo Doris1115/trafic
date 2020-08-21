@@ -2,11 +2,11 @@
   <visual-box :title="chartData.title" class="patrol-box">
     <template v-slot:main>
       <div class="block">
-        <el-carousel  height="100%" indicator-position="none" :autoplay="false">
+        <el-carousel height="100%" indicator-position="none" :autoplay="false">
           <el-carousel-item v-for="(item,index) in chartData.data" :key="index">
             <img :src="'data:image/jpeg;base64,' + item.url" />
             <h3 class="small">{{ item.text }}</h3>
-            <p>{{index+1}}/{{chartData.data.length}}</p>
+            <p>{{ index+1 }}/{{ chartData.data.length }}</p>
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -28,14 +28,14 @@ export default {
       type: Object,
       required: true
     }
-  },
+  }
 
-};
+}
 </script>
 
 <style lang='scss' scoped>
 .patrol-box {
-    height: calc(50% - 140px);
+  height: calc(50% - 140px);
 }
 
 .block {

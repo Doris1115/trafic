@@ -52,7 +52,7 @@ export default {
       areaData: {},
       collectWayData: {},
       highTimesData: {},
-      highSegmentODData:{},
+      highSegmentODData: {},
       pageTitle: '违法高发地段统计'
     }
   },
@@ -151,7 +151,7 @@ export default {
     },
     getHighSegmentOD() {
       highSegmentOD().then(res => {
-        console.log('res',res)
+        console.log('res', res)
         this.highSegmentODData = res
       })
     }

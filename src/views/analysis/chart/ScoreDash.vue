@@ -5,14 +5,14 @@
     <div class="visual_bg conBot3" />
     <div class="visual_bg conBot4" />
     <div class="visual_chart_text">
-      <h1>{{chartData.title}}+大数据</h1>
+      <h1>{{ chartData.title }}+大数据</h1>
       <h2>湘潭市交通大数据分析平台</h2>
     </div>
     <div class="icon-box">
       <i class="el-icon-s-data" />
-      <evaluation-reg class="icon-inline"/>
+      <evaluation-reg class="icon-inline" />
     </div>
-    <el-row>
+    <el-row class="wrap-container">
       <div class="dash-board">
         <div
           id="lastMonthRank"
@@ -57,12 +57,15 @@
           />
         </div>
       </div>
-      <dl>
-        <dd v-for="(item,index) in chartData.detail" :key="index">
+      <el-row class="score-reg" type="flex" justify="space-around">
+        <el-col v-for="(item,index) in chartData.detail" :key="index" :span="4">
           <h1>{{ item.type }}</h1>
           <p v-for="(text,index) in item.text" :key="index">{{ text }}</p>
-        </dd>
-      </dl>
+        </el-col>
+      </el-row>
+      <el-row class="map-box">
+        <map-chart ref="map" class="visual_chart" :chart-data="mapCity" />
+      </el-row>
     </el-row>
   </div>
 </template>
@@ -70,10 +73,12 @@
 <script>
 import Dash from '../components/Dash'
 import EvaluationReg from '../components/EvaluationReg'
+import MapChart from '../components/MapChart'
 export default {
   components: {
     Dash,
-    EvaluationReg
+    EvaluationReg,
+    MapChart
   },
   props: {
     chartData: {
@@ -88,25 +93,45 @@ export default {
         currentMonthScore: 2
       },
       active: 'lastMontScore',
+      mapCity: {
+        'citys': [{
+          'name': '雨湖区人民政府',
+          'value': [112.90737, 27.85632, 2]
+        }, {
+          'name': '湘潭市人民政府',
+          'value': [112.94415381443027, 27.83023620330214, 2]
+        },
+        {
+          'name': '东郊乡',
+          'value': [112.54555609714511, 27.757952450336617, 2]
+        }, {
+          'name': ' 韶山旅游景区',
+          'value': [112.48787787448886, 27.910966990680237, 2]
+        },
+        {
+          'name': '锦石乡',
+          'value': [112.74605658542636, 27.59072657037224, 2]
+        }]
+      }
     }
   },
   methods: {
     toActive(e) {
       var current = e.currentTarget.id
       var currentVal = this.rank[current]
-      var toggleDiv = Object.keys(this.rank).filter(item => this.rank[item] == 1).join("")
+      var toggleDiv = Object.keys(this.rank).filter(item => this.rank[item] == 1).join('')
       this.rank[current] = 1
       this.rank[toggleDiv] = currentVal
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 .visual_conBot {
   // height: calc(100% - 136px);
   height: 100%;
-  background: url(/source/images/ksh41.png) no-repeat;
+  background: url(/static/images/ksh41.png) no-repeat;
   background-size: 100% 100%;
   position: relative;
   .visual_bg {
@@ -160,7 +185,7 @@ export default {
     z-index: 99;
   }
 }
-.el-row {
+.el-row.wrap-container {
   position: absolute;
   top: 35px;
   bottom: 0;
@@ -194,15 +219,20 @@ export default {
     }
   }
 }
-dl {
+.score-reg {
   color: #fff;
   position: absolute;
   bottom: 10px;
-  top: 250px;
+  top: 320px;
   overflow: auto;
   width: 100%;
-  dd {
+  z-index: 999;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  el-col {
     padding-bottom: 10px;
+    float: left;
   }
   h1 {
     font-size: 16px;
@@ -220,7 +250,9 @@ dl {
   top: 280px;
   right: 20px;
   z-index: 999;
-  .icon-inline{display: inline;}
+  .icon-inline {
+    display: inline;
+  }
   i {
     color: #0091d0;
     font-size: 20px;
@@ -229,5 +261,12 @@ dl {
       color: #fff;
     }
   }
+}
+.map-box {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  top: 290px;
+  z-index: 998;
 }
 </style>

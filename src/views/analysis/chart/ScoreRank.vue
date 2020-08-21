@@ -66,9 +66,9 @@ export default {
       this.activeIndex = index
       this.$listeners.toggleRank()
     }
-  },
+  }
 
-};
+}
 </script>
 
 <style lang='scss' scoped>
@@ -82,7 +82,7 @@ export default {
     height: 38px;
     color: #fff;
     border-radius: 5px;
-    font-family: "Lato", sans-serif;
+    font-family: 'Lato', sans-serif;
     font-weight: 500;
     background: transparent;
     cursor: pointer;
@@ -103,7 +103,7 @@ export default {
     z-index: 1;
     &:after {
       position: absolute;
-      content: "";
+      content: '';
       width: 0;
       height: 100%;
       top: 0;
@@ -141,6 +141,9 @@ export default {
   bottom: 0;
   width: 100%;
   overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 dl {
   margin: 0;
