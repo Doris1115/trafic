@@ -35,7 +35,7 @@
         <!-- <el-table-column prop="roadName" label="道路名称" width="80" /> -->
         <el-table-column fixed prop="RoadName" label="路段名称" width="120" />
         <el-table-column v-for="(item,index) in tableColumnProp" :key="index" :label="item.title">
-          <el-table-column :prop="item.time" label="总次数" width="60" />
+          <el-table-column :prop="item.num" label="总次数" width="60" />
         </el-table-column>
       </el-table>
       <!--分页组件-->
@@ -54,7 +54,7 @@ export default {
       permission: {
         add: ['admin']
       },
-      time: '',
+      time: new Date(),
       queryTypeOptions: [
         { key: '', display_name: '' }
       ],
@@ -68,18 +68,7 @@ export default {
   },
 
   created() {
-    // this.queryData()
-    var param = {
-      day: 21,
-      month: 8,
-      year: 2020
-    }
-    highFrequencyRoadLink(param).then(res => {
-      this.tableData = res.tableData
-      this.$nextTick(item => {
-        this.tableLoading = false
-      })
-    })
+    this.queryData()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
@@ -106,7 +95,7 @@ export default {
     },
     initTableColumnProp() {
       for (let i = 1; i < 25; i++) {
-        const temp = { title: i + '时', num: 'am' + i + '.Num', timeSum: 'am' + i + '.TimeLength' }
+        const temp = { title: i + '时', num: 'am' + i + '.Num' }
         this.tableColumnProp.push(temp)
       }
     }
@@ -139,6 +128,16 @@ export default {
   margin-bottom: 5px;
   max-height: 70px;
   // overflow-x: hidden;
+}
+</style>
+<style lang="scss" >
+.el-table--scrollable-y .el-table__body-wrapper {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+/deep/ .el-table .cell {
+  text-align: center;
 }
 </style>
 

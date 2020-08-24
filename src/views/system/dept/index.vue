@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
-    <!--工具栏高发路段-->
+    <!--工具栏高发时段-->
     <div class="head-container">
       <div>
         <el-date-picker
           v-model="time"
-          type="date"
-          placeholder="选择日期"
+          type="month"
+          placeholder="选择月"
           size="small"
           clearable
           class="filter-item"
-          format="yyyy 年 MM 月 dd 日"
+          format="yyyy 年 MM 月"
           @change="queryData"
         />
         <!-- 搜索 -->
@@ -22,45 +22,20 @@
           @click="queryData"
         >搜索</el-button>
       </div>
-      <!-- <el-dialog
-        :close-on-click-modal="false"
-        :before-close="dialogClose"
-        :visible.sync="chartShow"
-        custom-class="chartModel"
-        title="趋势图"
-      >
-        <el-row class="line-box">
-          <line-chart :chart-data="trendData" />
-        </el-row>
-      </el-dialog>-->
       <!--表格渲染-->
       <el-table
         ref="table"
         v-loading="tableLoading"
         :data="tableData"
-        size="mini"
+        size="small"
         style="width: 100%;"
         height="800"
       >
-        <el-table-column fixed label="图表" width="60">
-          <template slot-scope="scope">
-            <el-button size="mini" type="success" @click="showChart(scope.row)">
-              <svg-icon icon-class="chart" />
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column prop="roadName" label="道路名称" width="80" fixed />
-        <el-table-column prop="roadSegid" label="路段名称" width="120" fixed />
-        <el-table-column
-          v-for="(item,index) in tableColumnProp"
-          :key="index"
-          :label="item.title"
-          width="80"
-        >
-          <el-table-column :prop="item.indexAvg" label="今日" width="80" />
-          <el-table-column :prop="item.lastMonthThisDayIndexAvg" label="上月同期" width="80" />
-          <el-table-column :prop="item.lastYearThisDayIndexAvg" label="去年同期" width="80" />
-          <el-table-column :prop="item.yesterdayIndexAvg" label="昨日" width="80" />
+        <el-table-column fixed type="selection" width="55" />
+        <el-table-column fixed prop="day" label="日" width="80" />
+        <el-table-column v-for="(item,index) in tableColumnProp" :key="index" :label="item.title">
+          <el-table-column :prop="item.num" label="总次数" width="60" />
+          <el-table-column :prop="item.timeSum" label="总时长" width="60" />
         </el-table-column>
       </el-table>
       <!--分页组件-->
@@ -70,39 +45,30 @@
 </template>
 
 <script>
-import { congestionIndex } from '@/api/bigData/roadCondition'
-// import LineChart from '@/system/bigData/chart/lineChart'
+import { highFrequencyTimeFrame } from '@/api/bigData/roadCondition'
 export default {
   name: 'Dept',
-  // components: { LineChart },
+
   data() {
     return {
-      time: '',
-      tableData: [],
-      tableColumnProp: [],
-      chartShow: false,
+      permission: {
+        add: ['admin']
+      },
+      time: new Date(),
+      queryTypeOptions: [
+        { key: '', display_name: '' }
+      ],
       tableLoading: false,
-      trendData: {}
+      tableData: [],
+      tableColumnProp: []
     }
   },
   mounted() {
     this.initTableColumnProp()
-    this.getEchartData()
   },
 
   created() {
-    // this.queryData()
-    var param = {
-      day: 21,
-      month: 8,
-      year: 2020
-    }
-    congestionIndex(param).then(res => {
-      this.tableData = res.tableData
-      this.$nextTick(item => {
-        this.tableLoading = false
-      })
-    })
+    this.queryData()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
@@ -116,15 +82,10 @@ export default {
     queryData() {
       this.tableLoading = true
       var param = {
-        // day: this.time.getDate(),
-        // month: this.time.getMonth() + 1,
-        // year: this.time.getFullYear()
-        day: 22,
-        month: 8,
-        year: 2020
+        month: this.time.getMonth() + 1,
+        year: this.time.getFullYear()
       }
-      console.log('data', this.time.getDate())
-      congestionIndex(param).then(res => {
+      highFrequencyTimeFrame(param).then(res => {
         this.tableData = res.tableData
         this.$nextTick(item => {
           this.tableLoading = false
@@ -136,50 +97,12 @@ export default {
         const temp = { title: i + '时', num: 'am' + i + '.Num', timeSum: 'am' + i + '.TimeLength' }
         this.tableColumnProp.push(temp)
       }
-    },
-    showChart(row) {
-      var data = Object.keys(row).filter(item => !item.indexOf('am')).map(el => {
-        return {
-          indexAvg: row[el].indexAvg,
-          lastMonthThisDayIndexAvg: row[el].lastMonthThisDayIndexAvg,
-          lastYearThisDayIndexAvg: row[el].lastYearThisDayIndexAvg,
-          yesterdayIndexAvg: row[el].yesterdayIndexAvg
-        }
-      })
-      this.trendData = {
-        data: [{
-          name: '今日',
-          data: data.map(item => item.indexAvg)
-        }, {
-          name: '上月同期',
-          data: data.map(item => item.lastMonthThisDayIndexAvg)
-        }, {
-          name: '去年同期',
-          data: data.map(item => item.lastYearThisDayIndexAvg)
-        }, {
-          name: '昨日',
-          data: data.map(item => item.yesterdayIndexAvg)
-        }],
-        xAxisData: data.map((item, index) => {
-          return index + 1 + '时'
-        })
-      }
-      this.chartShow = true
-    },
-    dialogClose() {
-      this.chartShow = false
-    },
-    getEchartData() {
-
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.line-box {
-  height: 400px;
-}
+<style scoped>
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -188,7 +111,6 @@ export default {
 /deep/ .vue-treeselect__single-value {
   height: 30px;
   font-size: 13px;
-  // line-height: 30px;
 }
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -208,30 +130,8 @@ export default {
   max-height: 70px;
   // overflow-x: hidden;
 }
-/deep/ .chartModel .el-dialog__body {
-  // background: #061537;
-}
-/deep/ .chartModel .el-dialog__header {
-  // background: #1f2d3d;
-  background: #13ce66;
-  .el-dialog__title {
-    color: #fff;
-  }
-  .el-dialog__headerbtn .el-dialog__close {
-    color: #fff;
-    border: 1px solid hsla(0, 0%, 100%, 0.4);
-    font-size: 18px;
-    border-radius: 50%;
-    padding: 4px;
-    transition: 0.2s;
-    cursor: pointer;
-    &:hover,
-    &:focus {
-      border-color: hsla(0, 0%, 100%, 0.6);
-      -webkit-transform: translateY(-0.2rem);
-      transform: translateY(-0.2rem);
-    }
-  }
+.search-item {
+  width: 220px;
 }
 </style>
 <style lang="scss" >
@@ -241,4 +141,3 @@ export default {
   }
 }
 </style>
-
