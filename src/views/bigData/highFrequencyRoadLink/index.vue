@@ -1,27 +1,40 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
+    <!--工具栏高发路段-->
     <div class="head-container">
       <div>
+        <el-date-picker
+          v-model="time"
+          type="date"
+          placeholder="选择日期"
+          size="small"
+          clearable
+          class="filter-item"
+          format="yyyy 年 MM 月 dd 日"
+        />
         <!-- 搜索 -->
-        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="queryData">搜索
-        </el-button>
+        <el-button
+          class="filter-item"
+          size="mini"
+          type="success"
+          icon="el-icon-search"
+          @click="queryData"
+        >搜索</el-button>
       </div>
-      <!-- <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0"
-        :title="crud.status.title" width="500px">
-        
-        <div slot="footer" class="dialog-footer">
-          <el-button type="text" @click="crud.cancelCU">取消</el-button>
-          <el-button :loading="crud.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
-        </div>
-      </el-dialog> -->
       <!--表格渲染-->
-      <el-table ref="table" v-loading="tableLoading" :data="tableData" size="small" style="width: 100%;" height="800">
+      <el-table
+        ref="table"
+        v-loading="tableLoading"
+        :data="tableData"
+        size="small"
+        style="width: 100%;"
+        height="800"
+      >
         <el-table-column fixed type="selection" width="55" />
         <!-- <el-table-column prop="roadName" label="道路名称" width="80" /> -->
-        <el-table-column fixed prop="roadLinkName" label="路段名称" width="120" />
+        <el-table-column fixed prop="RoadName" label="路段名称" width="120" />
         <el-table-column v-for="(item,index) in tableColumnProp" :key="index" :label="item.title">
-          <el-table-column :prop="item.time" label="总次数" width="60" />
+          <el-table-column :prop="item.num" label="总次数" width="60" />
         </el-table-column>
       </el-table>
       <!--分页组件-->
@@ -31,22 +44,20 @@
 </template>
 
 <script>
-import Treeselect, { LOAD_CHILDREN_OPTIONS } from "@riophae/vue-treeselect";
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { highFrequencyRoadLink } from '@/api/bigData/roadCondition'
-
 export default {
-  name: 'highFrequencyRoadLink',
-  components: { Treeselect },
+  name: 'Dept',
+
   data() {
     return {
       permission: {
-        add: ['admin', 'assessMark:add']
+        add: ['admin']
       },
+      time: new Date(),
       queryTypeOptions: [
         { key: '', display_name: '' }
       ],
-      tableLoading: false,
+      tableLoading: true,
       tableData: [],
       tableColumnProp: []
     }
@@ -54,12 +65,20 @@ export default {
   mounted() {
     this.initTableColumnProp()
   },
+
+  created() {
+    this.queryData()
+  },
   methods: {
     queryData() {
+      var param = {
+        day: this.time.getDate(),
+        month: this.time.getMonth() + 1,
+        year: this.time.getFullYear()
+      }
       this.tableLoading = true
-      highFrequencyRoadLink().then(res => {
-        console.log(res)
-        this.tableData = res
+      highFrequencyRoadLink(param).then(res => {
+        this.tableData = res.content
         this.$nextTick(item => {
           this.tableLoading = false
         })
@@ -67,21 +86,13 @@ export default {
     },
     initTableColumnProp() {
       for (let i = 1; i < 25; i++) {
-        const temp = { title: i + '时', columnProp: 'am' + i, time: 'am' + i + '.time'}
+        const temp = { title: i + '时', num: 'am' + i + '.Num' }
         this.tableColumnProp.push(temp)
       }
-      console.log(this.tableColumnProp)
     }
-  },
-  created() {
-
   }
 }
 </script>
-
-<style scoped>
-</style>
-
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 /deep/ .vue-treeselect__control,
@@ -110,3 +121,14 @@ export default {
   // overflow-x: hidden;
 }
 </style>
+<style lang="scss" >
+.el-table--scrollable-y .el-table__body-wrapper {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+/deep/ .el-table .cell {
+  text-align: center;
+}
+</style>
+
