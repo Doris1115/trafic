@@ -3,35 +3,14 @@
     <!--工具栏高发时段-->
     <div class="head-container">
       <div>
-        <el-date-picker
-          v-model="time"
-          type="month"
-          placeholder="选择月"
-          size="small"
-          clearable
-          class="filter-item"
-          format="yyyy 年 MM 月"
-        />
+        <el-date-picker v-model="time" type="month" placeholder="选择月" size="small" clearable class="filter-item" format="yyyy 年 MM 月" />
         <!-- 搜索 -->
-        <el-button
-          class="filter-item"
-          size="mini"
-          type="success"
-          icon="el-icon-search"
-          @click="queryData"
-        >搜索</el-button>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="queryData">搜索</el-button>
       </div>
       <!--表格渲染-->
-      <el-table
-        ref="table"
-        v-loading="tableLoading"
-        :data="tableData"
-        size="small"
-        style="width: 100%;"
-        height="800"
-      >
+      <el-table ref="table" v-loading="tableLoading" :data="tableData" size="small" style="width: 100%;" height="800">
         <el-table-column fixed type="selection" width="55" />
-        <el-table-column fixed prop="day" label="日" width="80" />
+        <el-table-column fixed prop="day" label="日" width="80" :formatter="dayFormatter" />
         <el-table-column v-for="(item,index) in tableColumnProp" :key="index" :label="item.title">
           <el-table-column :prop="item.num" label="总次数" width="60" />
           <el-table-column :prop="item.timeSum" label="总时长" width="60" />
@@ -88,6 +67,9 @@ export default {
         const temp = { title: i + '时', num: 'am' + i + '.Num', timeSum: 'am' + i + '.TimeLength' }
         this.tableColumnProp.push(temp)
       }
+    },
+    dayFormatter(row, column, cellValue, index) {
+      return (this.time.getMonth() + 1) + '月' + cellValue + '日'
     }
   }
 }
@@ -124,11 +106,9 @@ export default {
 .search-item {
   width: 220px;
 }
-</style>
-<style lang="scss" >
-.el-table--scrollable-y .el-table__body-wrapper {
-  &::-webkit-scrollbar {
-    display: none;
-  }
+/deep/ .el-table .cell {
+  text-align: center;
 }
+</style>
+
 </style>

@@ -13,18 +13,21 @@ export const constantRouterMap = [
   },
   {
     path: '/analysis',
-    meta: { title: 's', noCache: true },
+    meta: { title: '综合展示', noCache: true },
     component: (resolve) => require(['@/views/analysis/index.vue'], resolve),
     hidden: true,
-    children: [{
+    children: [
+    {
       path: 'percancy',
       name: 'Percancy',
       component: (resolve) => require(['@/views/analysis/visual/percancy'], resolve)
-    }, {
+    },
+    {
       path: 'alarm',
       name: 'Alarm',
       component: (resolve) => require(['@/views/analysis/visual/alarm'], resolve)
-    }, {
+    },
+    {
       path: 'inspect',
       name: 'Inspect',
       component: (resolve) => require(['@/views/analysis/visual/inspect'], resolve)

@@ -3,33 +3,12 @@
     <!--工具栏高发路段-->
     <div class="head-container">
       <div>
-        <el-date-picker
-          v-model="time"
-          type="date"
-          placeholder="选择日期"
-          size="small"
-          clearable
-          class="filter-item"
-          format="yyyy 年 MM 月 dd 日"
-        />
+        <el-date-picker v-model="time" type="date" placeholder="选择日期" size="small" clearable class="filter-item" format="yyyy 年 MM 月 dd 日" />
         <!-- 搜索 -->
-        <el-button
-          class="filter-item"
-          size="mini"
-          type="success"
-          icon="el-icon-search"
-          @click="queryData"
-        >搜索</el-button>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="queryData">搜索</el-button>
       </div>
       <!--表格渲染-->
-      <el-table
-        ref="table"
-        v-loading="tableLoading"
-        :data="tableData"
-        size="small"
-        style="width: 100%;"
-        height="800"
-      >
+      <el-table ref="table" v-loading="tableLoading" :data="tableData" size="small" style="width: 100%;" height="800">
         <el-table-column fixed type="selection" width="55" />
         <!-- <el-table-column prop="roadName" label="道路名称" width="80" /> -->
         <el-table-column fixed prop="RoadName" label="路段名称" width="120" />
@@ -119,13 +98,6 @@ export default {
   margin-bottom: 5px;
   max-height: 70px;
   // overflow-x: hidden;
-}
-</style>
-<style lang="scss" >
-.el-table--scrollable-y .el-table__body-wrapper {
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 /deep/ .el-table .cell {
   text-align: center;
